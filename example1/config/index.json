@@ -1,0 +1,33 @@
+{
+  "require": {
+    "express": null,
+    "redis": null,
+    "connect-redis": null,
+    "./my-express-configurator": null
+  },
+  "templates": {
+    "redisClient": {
+      "module": "connect-redis",
+      "constructor": "createServer",
+      "args": ["#config.port", "#config.hostname", "#config"]
+    }
+  },
+  "construct": {
+    "redisStore": {
+      "module": "connect-redis",
+      "depends": ["#express"]
+    },
+    "redisClient": {
+      "template": "redisClient",
+      "config": {"port":1,"hostname":2,"other":3}
+    },
+    "app": {
+      "module": "express",
+      "method": "createServer"
+      "confighelper": {
+        "module": "my-express-configurator",
+        "depends": ["#app", "#redisStore"]
+      }
+    }
+  }
+}
